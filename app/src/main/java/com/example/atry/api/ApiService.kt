@@ -1,7 +1,5 @@
 package com.example.atry.api
 
-import android.util.Log
-import com.example.atry.api.NetworkManager.apiService
 import com.example.atry.model.User
 import retrofit2.Call
 import retrofit2.Response
@@ -12,26 +10,16 @@ import retrofit2.http.Path
 
 interface ApiService {
 
-    data class LoginRequest(val name: String, val password: String)
-    data class LoginResponse(val message: String, val success: Boolean)
-
-
     // 获取用户信息接口，传入用户 ID
-    @POST("user/login")
-    fun login(@Body loginRequest: LoginRequest): Response<LoginResponse> {
-        Log.d("ApiService", "Requesting login with: $loginRequest")
-        return try {
-            val response = apiService.login(loginRequest)
-            Log.d("ApiService", "Response: ${response.body()}")
-            response
-        } catch (e: Exception) {
-            Log.e("ApiService", "Login failed", e)
-            Response.success(LoginResponse("Error", false))  // Handle error response gracefully
-        }
-    }
-
+    @GET("users/{id}")
+    fun getUser(@Path("id") id: Int): Call<User>
 
     // 你可以根据需求继续添加其他接口，例如获取所有用户、创建用户等
-    // @POST("users")
-    // fun createUser(@Body user: User): Call<User>
+    //@POST("users")
+    //fun createUser(@Body user: User): Call<User>
+}
+
+interface AuthService {
+    @POST("/user/login") // 登录接口的路径，具体根据你的后端 API 修改
+    suspend fun login(@Body request: NetworkManager.LoginRequest): Response<NetworkManager.LoginResponse>
 }

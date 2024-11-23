@@ -1,26 +1,30 @@
 package com.example.atry
-
-import android.net.http.HttpException
-import android.os.Build
-import android.os.Bundle
-import androidx.activity.ComponentActivity
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresExtension
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.atry.api.ApiService
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.example.atry.api.NetworkManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.IOException
+import kotlinx.coroutines.withContext
 
-class LoginActivity : ComponentActivity() {
+
+class LoginActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,39 +33,27 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     @Composable
     fun LoginScreen() {
-        val context = LocalContext.current
-        val coroutineScope = rememberCoroutineScope()
-
-
         var name by rememberSaveable { mutableStateOf("") }
         var password by rememberSaveable { mutableStateOf("") }
-
-        var isLoginSuccessful by remember { mutableStateOf(false) }
-        var isSignUpSuccessful by remember { mutableStateOf(false) }
-
-        // Handling success messages
-        var loginMessage by remember { mutableStateOf("") }
-        var signupMessage by remember { mutableStateOf("") }
-
+        var isLoading by remember { mutableStateOf(false) }
+        var errorMessage by remember { mutableStateOf<String?>(null) }
+        val coroutineScope = rememberCoroutineScope()
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
-            // Username TextField
             TextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Username") },
+                label = { Text("name") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Password TextField
             TextField(
                 value = password,
                 onValueChange = { password = it },
@@ -69,72 +61,90 @@ class LoginActivity : ComponentActivity() {
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Login Button
             Button(
                 onClick = {
-                    if (name.isNotEmpty() && password.isNotEmpty()) {
-                        coroutineScope.launch {
-                            // Call the login API
-                            val loginRequest = ApiService.LoginRequest(name, password)
-                            val response = NetworkManager.apiService.login(loginRequest)
+                    coroutineScope.launch {
+                        isLoading = true
+                        errorMessage = null
+                        try {
 
-                            if (response.isSuccessful) {
-                                loginMessage = "Login success"
-                            } else {
-                                loginMessage = "Login failed"
+                            val response = withContext(Dispatchers.IO) {
+                                NetworkManager.authService.login(
+                                    NetworkManager.LoginRequest(
+                                        name,
+                                        password
+                                    )
+                                )
                             }
+                            Log.d("NetworkRequest", "Request was sent successfully")
+                            if (response.isSuccessful) {
+                                val loginResponse = response.body()
+                                if (loginResponse != null) {
+                                    onLoginSuccess(loginResponse.token)
+                                } else {
+                                    errorMessage = "Unexpected response from server"
+                                }
+                            } else {
+                                errorMessage = response.errorBody()?.string() ?: "Login failed"
+                            }
+                        } catch (e: Exception) {
+                            errorMessage = "Network error: ${e.message}"
+                        } finally {
+                            isLoading = false
                         }
-                    } else {
-                        loginMessage = "Please enter username and password and email."
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !isLoading
             ) {
-                Text("Login")
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text("Login")
+                }
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Signup Button
             Button(
-                onClick = {
-                    if (name.isNotEmpty() && password.isNotEmpty()) {
-                        // Simulate a signup action
-                        signupMessage = "Sign Up Successful"
-                        isSignUpSuccessful = true
-                    } else {
-                        signupMessage = "Please fill all fields for signup."
-                        isSignUpSuccessful = false
-                    }
-                },
+                onClick = { /* Perform signup logic */ },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Sign Up")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Display login success message or error
-            if (loginMessage.isNotEmpty()) {
-                Text(
-                    text = loginMessage,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if (isLoginSuccessful) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-                )
-            }
-
-            // Display signup success message or error
-            if (signupMessage.isNotEmpty()) {
-                Text(
-                    text = signupMessage,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if (isSignUpSuccessful) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-                )
+                Text("Signup")
             }
         }
+
+        }
+
+    private fun onLoginSuccess(token: String) {
+
+        // 保存用户 Token
+        saveToken(token)
+
+        // 显示登录成功提示
+        showSuccessMessage()
+
+        // 跳转到主界面
+        navigateToHomeScreen()
     }
+
+    private fun saveToken(token: String) {
+        val sharedPreferences = this.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString("auth_token", token).apply()
+    }
+
+    private fun showSuccessMessage() {
+        Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun navigateToHomeScreen() {
+        val intent = Intent(this, MainActivity::class.java)
+        this.startActivity(intent)
+        // 如果希望登录界面不再保留
+        (this as? Activity)?.finish()
+    }
+
 }
-
-

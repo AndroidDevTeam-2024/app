@@ -38,7 +38,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
-
         setContent {
 
             MaterialTheme {

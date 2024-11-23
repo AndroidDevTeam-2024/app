@@ -56,8 +56,10 @@ android {
 dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0") // Retrofit 核心库
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Gson 转换器库
-    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Gson 转换器
+    implementation("com.squareup.okhttp3:okhttp:4.9.3") // OkHttp 网络库
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3") // OkHttp 日志拦截器
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
