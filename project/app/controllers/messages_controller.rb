@@ -169,6 +169,31 @@ class MessagesController < ApplicationController
     end
   end
 
+  def delete_talk
+    user1 = User.find_by(id: params[:id1])
+    user2 = User.find_by(id: params[:id2])
+    if user1 && user2
+      # 删除发送方为user1 接收方为user2 或 发送方为user2 接收方为user1 的消息
+      messages = Message.where("(publisher = ? AND acceptor = ?) OR (publisher = ? AND acceptor = ?)", user1.id, user2.id, user2.id, user1.id)
+      if messages.any?
+        messages.each do |message|
+          message.destroy!
+        end
+        render json: {
+          message: "Message deleted"
+        }, status: :ok
+      else
+        render json: {
+          message: "Message not found"
+        }, status: :not_found
+      end
+    else
+      render json: {
+        message: "Sender or Receiver not found"
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_message
