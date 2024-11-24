@@ -183,6 +183,26 @@ class CommoditiesController < ApplicationController
     end
   end
 
+  def update_by_id
+    @commodity = Commodity.find_by(id: params[:id])
+    if @commodity
+      @commodity.update(commodity_params)
+      render json: {
+        id: @commodity.id,
+        name: @commodity.name,
+        price: @commodity.price,
+        introduction: @commodity.introduction,
+        business_id: @commodity.business_id,
+        homepage: @commodity.homepage,
+        exist: @commodity.exist,
+      }, status: :ok
+    else
+      render json: {
+        errors: "Commodity not found"
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_commodity

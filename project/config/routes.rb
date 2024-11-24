@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   post "user/register" => "users#register"
   post "user/login" => "users#login"
   get "user/find_by_id/:id" => "users#find_by_id"
+  put "user/update_by_id/:id" => "users#update_by_id"
 
   # Commodity
   post "commodity/register" => "commodities#register"
@@ -35,6 +36,7 @@ Rails.application.routes.draw do
   get "commodity/find_all" => "commodities#find_all"
   get "commodity/find_by_id/:id" => "commodities#find_by_id"
   delete "commodity/delete_by_id/:id" => "commodities#delete_by_id"
+  put "commodity/update_by_id/:id" => "commodities#update_by_id"
   
 
   # Message
