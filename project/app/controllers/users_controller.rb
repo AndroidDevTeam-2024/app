@@ -73,6 +73,21 @@ class UsersController < ApplicationController
     end
   end
 
+  def login
+    @user = User.find_by(name: params[:name])
+    if @user && @user.authenticate(params[:password])
+      render json: {
+        id: @user.id,
+        email: @user.email,
+        avator: @user.avator,
+      }
+    else 
+      render json: {
+        errors: @user.errors.full_messages,
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user

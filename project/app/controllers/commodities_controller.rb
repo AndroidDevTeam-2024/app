@@ -1,5 +1,6 @@
 class CommoditiesController < ApplicationController
   before_action :set_commodity, only: %i[ show edit update destroy ]
+  skip_before_action :verify_authenticity_token
 
   # GET /commodities or /commodities.json
   def index
@@ -57,6 +58,30 @@ class CommoditiesController < ApplicationController
     end
   end
 
+  def register
+    business_id = params[:business_id]
+    @user = User.find_by(id: business_id)
+    if @user
+      @commodity = Commodity.new(commodity_params)
+      @commodity.homepage = "path/to/default/homepage"
+      @commodity.business_id = business_id
+      if @commodity.save
+        render json: {
+          id: @commodity.id,
+          homepage: @commodity.homepage,
+        }, status: :ok
+      else
+        render json: {
+          errors: @commodity.errors.full_messages
+        }, status: :bad_request
+      end
+    else
+      render json: {
+        errors: "Business User not found"
+      }, status: :bad_request
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_commodity
@@ -65,6 +90,6 @@ class CommoditiesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def commodity_params
-      params.require(:commodity).permit(:name, :price, :introduction, :business_id, :homepage, :exist)
+      params.require(:commodity).permit(:name, :price, :introduction, :business_id)
     end
 end

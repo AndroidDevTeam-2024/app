@@ -1,5 +1,6 @@
 class DealsController < ApplicationController
   before_action :set_deal, only: %i[ show edit update destroy ]
+  skip_before_action :verify_authenticity_token
 
   # GET /deals or /deals.json
   def index
@@ -59,11 +60,45 @@ class DealsController < ApplicationController
 
   def comment
     @deal = Deal.find(params[:deal_id])
-    @deal.comment = params[:comment]
-    if @deal.save
-      render json: { id: @deal.id, homepage:  }
+    if @deal
+      @deal.comment = params[:comment]
+      commodity = Commodity.find_by(id: @deal.commodity)
+      if @deal.save
+        render json: { 
+          homepage: commodity.homepage
+        }, status: :ok
+      else
+        render json: { 
+          errors: @deal.errors.full_messages
+        }, status: :bad_request
+      end
     else
-      render json: { status: "error" }
+      render json: { 
+        status: "Deal not found"
+      }, status: :not_found
+    end
+  end
+
+  def post
+    seller = User.find_by(id: params[:seller])
+    customer = User.find_by(id: params[:customer])
+    commodity = Commodity.find_by(id: params[:commodity])
+    if seller && customer && commodity && commodity.exist
+      @deal = Deal.new(deal_params)
+      commodity.exist = false
+      if @deal.save
+        render json: { 
+          id: @deal.id 
+        }, status: :ok
+      else
+        render json: { 
+          errors: "Deal save error" 
+        }, status: :bad_request
+      end
+    else
+      render json: { 
+        status: "Seller or Customer or Commodity not found" 
+      }, status: :not_found
     end
   end
 
@@ -75,6 +110,6 @@ class DealsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def deal_params
-      params.require(:deal).permit(:seller, :customer, :date, :comment)
+      params.require(:deal).permit(:seller, :customer, :commodity, :date, :comment)
     end
 end

@@ -19,8 +19,16 @@ Rails.application.routes.draw do
   
   # Deal
   post "/deal/comment" => "deals#comment"
+  post "/deal/post" => "deals#post"
 
   # User
   post "user/register" => "users#register"
+  post "user/login" => "users#login"
+
+  # Commodity
+  post "commodity/register" => "commodities#register"
+  
+
+  # Message
   
 end
