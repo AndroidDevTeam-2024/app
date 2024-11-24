@@ -82,6 +82,93 @@ class CommoditiesController < ApplicationController
     end
   end
 
+  def find_by_category
+    category = params[:category]
+    @commodities = Commodity.where(category: category)
+    if @commodities
+      render json: {
+        # 返回每一个商品的id, name, price, introduction, homepage组成的数组
+        commodities: @commodities.map { |commodity| {
+          id: commodity.id,
+          name: commodity.name,
+          price: commodity.price,
+          introduction: commodity.introduction,
+          homepage: commodity.homepage,
+        } }
+      }
+    else
+      render json: {
+        errors: "No commodity found"
+      }, status: :not_found
+    end
+  end
+
+  def find_by_publisher
+    user = User.find_by(id: params[:publisher])
+    if user 
+      @commodities = Commodity.where(business_id: user.id)
+      if @commodities
+        render json: {
+          # 返回每一个商品的id, name, price, introduction, homepage组成的数组
+          commodities: @commodities.map { |commodity| {
+            id: commodity.id,
+            name: commodity.name,
+            price: commodity.price,
+            introduction: commodity.introduction,
+            homepage: commodity.homepage,
+          } }
+        }
+      else
+        render json: {
+          errors: "No commodity found"
+        }, status: :not_found
+      end
+    else
+      render json: {
+        errors: "User not found"
+      }, status: :not_found
+    end
+  end
+
+  def find_all
+    @commodities = Commodity.all
+    if @commodities
+      render json: {
+        # 返回每一个商品的id, name, price, introduction, homepage组成的数组
+        commodities: @commodities.map { |commodity| {
+          id: commodity.id,
+          name: commodity.name,
+          price: commodity.price,
+          introduction: commodity.introduction,
+          homepage: commodity.homepage,
+        } }
+      }
+    else
+      render json: {
+        errors: "No commodity found"
+      }, status: :not_found
+    end
+  end
+
+  def find_by_id
+    @commodity = Commodity.find_by(id: params[:id])
+    if @commodity
+      render json: {
+        id: @commodity.id,
+        name: @commodity.name,
+        price: @commodity.price,
+        introduction: @commodity.introduction,
+        business_id: @commodity.business_id,
+        homepage: @commodity.homepage,
+        exist: @commodity.exist,
+      }
+    else
+      render json: {
+        errors: "Commodity not found"
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_commodity

@@ -102,6 +102,44 @@ class DealsController < ApplicationController
     end
   end
 
+  def find_by_id
+    @deal = Deal.find_by(id: params[:id])
+    if @deal
+      render json: { 
+        id: @deal.id,
+        seller: @deal.seller,
+        customer: @deal.customer,
+        commodity: @deal.commodity,
+        date: @deal.date,
+        comment: @deal.comment
+      }, status: :ok
+    else
+      render json: { 
+        errors: "Deal not found" 
+      }, status: :not_found
+    end
+  end
+
+  def find_by_person
+    deals = Deal.where(seller: params[:id]).or(Deal.where(customer: params[:id]))
+    if deals
+      render json: { 
+        deals: deals.map { |deal| {
+          id: deal.id,
+          seller: deal.seller,
+          customer: deal.customer,
+          commodity: deal.commodity,
+          date: deal.date,
+          comment: deal.comment
+        } }
+      }, status: :ok
+    else
+      render json: { 
+        errors: "Deal not found" 
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_deal

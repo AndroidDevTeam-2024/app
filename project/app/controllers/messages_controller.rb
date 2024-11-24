@@ -79,6 +79,23 @@ class MessagesController < ApplicationController
     end
   end
 
+  def find_by_id
+    @message = Message.find_by(id: params[:id])
+    if @message
+      render json: {
+        id: @message.id,
+        date: @message.date,
+        content: @message.content,
+        publisher: @message.publisher,
+        acceptor: @message.acceptor
+      }, status: :ok
+    else
+      render json: {
+        message: "Message not found"
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_message

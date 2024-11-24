@@ -12,6 +12,7 @@
   User.find_or_create_by!(name: name, email: "#{name}@example.com") do |user|
     user.password = "#{name}123"
     user.password_confirmation = "#{name}123"
+    user.avator = "path/to/default/avator"
   end
 end
 

@@ -20,16 +20,24 @@ Rails.application.routes.draw do
   # Deal
   post "/deal/comment" => "deals#comment"
   post "/deal/post" => "deals#post"
+  get "/deal/find_by_id/:id" => "deals#find_by_id"
+  get "/deal/find_by_person/:id" => "deals#find_by_person"
 
   # User
   post "user/register" => "users#register"
   post "user/login" => "users#login"
+  get "user/find_by_id/:id" => "users#find_by_id"
 
   # Commodity
   post "commodity/register" => "commodities#register"
+  get "commodity/find_by_category/:category" => "commodities#find_by_category"
+  get "commodity/find_by_publisher/:publisher" => "commodities#find_by_publisher"
+  get "commodity/find_all" => "commodities#find_all"
+  get "commodity/find_by_id/:id" => "commodities#find_by_id"
   
 
   # Message
   post "message/send" => "messages#send_message"
+  get "message/find_by_id/:id" => "messages#find_by_id"
   
 end
