@@ -57,6 +57,16 @@ class DealsController < ApplicationController
     end
   end
 
+  def comment
+    @deal = Deal.find(params[:deal_id])
+    @deal.comment = params[:comment]
+    if @deal.save
+      render json: { id: @deal.id, homepage:  }
+    else
+      render json: { status: "error" }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_deal

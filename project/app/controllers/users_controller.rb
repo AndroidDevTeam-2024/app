@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
+  skip_before_action :verify_authenticity_token
 
   # GET /users or /users.json
   def index
@@ -57,6 +58,22 @@ class UsersController < ApplicationController
     end
   end
 
+  def register
+    @user = User.new(user_params)
+    @user.avator = "path/to/default/avator"
+    if @user.save
+      render json: { 
+        id: @user.id,
+        avator: @user.avator 
+      }, status: :ok
+    else
+      render json: {
+        errors: @user.errors.full_messages,
+        user_params: user_params
+      }, status: :unprocessable_entity
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -65,6 +82,10 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:name, :email, :password_digest, :avator)
+      {
+        name: params[:name],
+        email: params[:email],
+        password: params[:password],
+      }
     end
 end

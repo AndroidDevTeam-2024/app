@@ -15,4 +15,12 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  # 
+  
+  # Deal
+  post "/deal/comment" => "deals#comment"
+
+  # User
+  post "user/register" => "users#register"
+  
 end
