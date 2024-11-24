@@ -39,5 +39,6 @@ Rails.application.routes.draw do
   # Message
   post "message/send" => "messages#send_message"
   get "message/find_by_id/:id" => "messages#find_by_id"
+  get "message/find_by_receiver/:receiver" => "messages#find_by_receiver"
   
 end

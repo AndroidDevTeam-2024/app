@@ -96,6 +96,35 @@ class MessagesController < ApplicationController
     end
   end
 
+  def find_by_receiver
+    receiver_id = params[:receiver].to_i
+
+    # 获取每个发送方的最新消息的 ID
+    latest_message_ids = Message.where(acceptor: receiver_id)
+                                .group(:publisher)
+                                .maximum(:id)
+                                .values
+
+    # 查询这些最新消息
+    latest_messages = Message.where(id: latest_message_ids)
+    if latest_messages.any?
+      render json: {
+        messages: latest_messages.map { |message| {
+          id: message.id,
+          date: message.date,
+          content: message.content,
+          publisher: message.publisher,
+          publisher_name: User.find_by(id: message.publisher).name,
+          acceptor: message.acceptor
+        } }
+      }
+    else
+      render json: {
+        message: "Message not found"
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_message
