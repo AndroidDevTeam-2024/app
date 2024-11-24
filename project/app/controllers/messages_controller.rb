@@ -1,5 +1,6 @@
 class MessagesController < ApplicationController
   before_action :set_message, only: %i[ show edit update destroy ]
+  skip_before_action :verify_authenticity_token
 
   # GET /messages or /messages.json
   def index
@@ -17,6 +18,27 @@ class MessagesController < ApplicationController
 
   # GET /messages/1/edit
   def edit
+  end
+
+  def send_message
+    sender = User.find_by(id: message_params[:publisher])
+    receiver = User.find_by(id: message_params[:acceptor])
+    if sender && receiver
+      @message = Message.new(message_params)
+      if @message.save
+        render json: {
+          id: @message.id,
+        }, status: :ok
+      else
+        render json: {
+          errors: "Message not sent"
+        }, status: :bad_request
+      end
+    else
+      render json: {
+        message: "Sender or receiver not found"
+      }, status: :not_found
+    end
   end
 
   # POST /messages or /messages.json

@@ -30,5 +30,6 @@ Rails.application.routes.draw do
   
 
   # Message
+  post "message/send" => "messages#send_message"
   
 end
