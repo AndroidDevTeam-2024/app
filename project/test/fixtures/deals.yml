@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  seller: 1
+  customer: 1
+  date: 2024-11-24 19:29:22
+  comment: MyString
+
+two:
+  seller: 1
+  customer: 1
+  date: 2024-11-24 19:29:22
+  comment: MyString

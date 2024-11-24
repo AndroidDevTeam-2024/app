@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date: 2024-11-24 19:39:29
+  content: MyString
+  publisher: 1
+  acceptor: 1
+
+two:
+  date: 2024-11-24 19:39:29
+  content: MyString
+  publisher: 1
+  acceptor: 1

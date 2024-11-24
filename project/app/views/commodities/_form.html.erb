@@ -1,0 +1,47 @@
+<%= form_with(model: commodity) do |form| %>
+  <% if commodity.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(commodity.errors.count, "error") %> prohibited this commodity from being saved:</h2>
+
+      <ul>
+        <% commodity.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :price, style: "display: block" %>
+    <%= form.text_field :price %>
+  </div>
+
+  <div>
+    <%= form.label :introduction, style: "display: block" %>
+    <%= form.text_field :introduction %>
+  </div>
+
+  <div>
+    <%= form.label :business_id, style: "display: block" %>
+    <%= form.number_field :business_id %>
+  </div>
+
+  <div>
+    <%= form.label :homepage, style: "display: block" %>
+    <%= form.text_field :homepage %>
+  </div>
+
+  <div>
+    <%= form.label :exist, style: "display: block" %>
+    <%= form.check_box :exist %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
