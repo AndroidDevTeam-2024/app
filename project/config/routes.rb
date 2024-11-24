@@ -34,11 +34,13 @@ Rails.application.routes.draw do
   get "commodity/find_by_publisher/:publisher" => "commodities#find_by_publisher"
   get "commodity/find_all" => "commodities#find_all"
   get "commodity/find_by_id/:id" => "commodities#find_by_id"
+  delete "commodity/delete_by_id/:id" => "commodities#delete_by_id"
   
 
   # Message
   post "message/send" => "messages#send_message"
   get "message/find_by_id/:id" => "messages#find_by_id"
   get "message/find_by_receiver/:receiver" => "messages#find_by_receiver"
+  delete "message/delete_by_id/:id" => "messages#delete_by_id"
   
 end

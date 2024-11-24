@@ -125,6 +125,20 @@ class MessagesController < ApplicationController
     end
   end
 
+  def delete_by_id
+    @message = Message.find_by(id: params[:id])
+    if @message
+      @message.destroy!
+      render json: {
+        message: "Message deleted"
+      }, status: :ok
+    else
+      render json: {
+        messages: "Message not found"
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_message
