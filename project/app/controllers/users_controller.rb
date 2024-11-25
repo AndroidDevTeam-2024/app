@@ -134,9 +134,9 @@ class UsersController < ApplicationController
         end
         relative_path = "uploads/#{uploaded_file.original_filename}"
         image_url = "#{request.base_url}/#{relative_path}"
-        if @user.update(avator: image_url)
+        if @user.update_column(:avator, image_url)
           render json: {
-            avator: @user.avator,
+            avator: image_url
           }, status: :ok
         else
           render json: {
