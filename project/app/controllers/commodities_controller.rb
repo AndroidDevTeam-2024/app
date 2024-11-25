@@ -203,6 +203,54 @@ class CommoditiesController < ApplicationController
     end
   end
 
+  def upload_homepage
+    @commodity = Commodity.find_by(id: params[:id])
+    
+    if @commodity
+      if params[:homepage].present?
+        uploaded_file = params[:homepage]
+        uploads_dir = Rails.root.join('public', 'uploads')
+        FileUtils.mkdir_p(uploads_dir)
+        file_path = uploads_dir.join(uploaded_file.original_filename)
+        File.open(file_path, 'wb') do |file|
+          file.write(uploaded_file.read)
+        end
+        relative_path = "uploads/#{uploaded_file.original_filename}"
+        image_url = "#{request.base_url}/#{relative_path}"
+        if @commodity.update(homepage: image_url)
+          render json: {
+            homepage: @commodity.homepage
+          }, status: :ok
+        else
+          render json: {
+            errors: "Commodity Update Failed!",
+          }, status: :unprocessable_entity
+        end
+      else
+        render json: {
+          errors: "No picture uploaded",
+        }, status: :bad_request
+      end
+    else
+      render json: {
+        errors: "Commodity not found",
+      }, status: :not_found
+    end
+  end
+
+  def get_homepage
+    @commodity = Commodity.find_by(id: params[:id])
+    if @commodity
+      render json: {
+        homepage: @commodity.homepage
+      }, status: :ok
+    else
+      render json: {
+        errors: "Commodity not found"
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_commodity
@@ -211,6 +259,6 @@ class CommoditiesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def commodity_params
-      params.require(:commodity).permit(:name, :price, :introduction, :business_id, :category)
+      params.require(:commodity).permit(:name, :price, :introduction, :business_id, :category, :homepage)
     end
 end

@@ -121,6 +121,53 @@ class UsersController < ApplicationController
     end
   end
 
+  def upload_avator
+    @user = User.find_by(id: params[:id])
+    if @user
+      if params[:avator].present?
+        uploaded_file = params[:avator]
+        uploads_dir = Rails.root.join('public', 'uploads')
+        FileUtils.mkdir_p(uploads_dir)
+        file_path = uploads_dir.join(uploaded_file.original_filename)
+        File.open(file_path, 'wb') do |file|
+          file.write(uploaded_file.read)
+        end
+        relative_path = "uploads/#{uploaded_file.original_filename}"
+        image_url = "#{request.base_url}/#{relative_path}"
+        if @user.update(avator: image_url)
+          render json: {
+            avator: @user.avator,
+          }, status: :ok
+        else
+          render json: {
+            errors: @user.errors.full_messages,
+          }, status: :unprocessable_entity
+        end
+      else
+        render json: {
+          errors: "No picture uploaded",
+        }, status: :bad_request
+      end
+    else
+      render json: {
+        errors: "User not found",
+      }, status: :not_found
+    end
+  end
+
+  def get_avator
+    @user = User.find_by(id, params[:id])
+    if @user
+      render json: {
+        homepage: @user.homepage
+      }, status: :ok
+    else
+      render json: {
+        errors: "User not found"
+      }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -133,6 +180,7 @@ class UsersController < ApplicationController
         name: params[:name],
         email: params[:email],
         password: params[:password],
+        avator: params[:avator],
       }
     end
 end
