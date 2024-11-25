@@ -64,7 +64,7 @@ class CommoditiesController < ApplicationController
     if @user
       @commodity = Commodity.new(commodity_params)
       @commodity.homepage = "path/to/default/homepage"
-      @commodity.business_id = business_id
+      @commodity.exist = true
       if @commodity.save
         render json: {
           id: @commodity.id,
@@ -211,6 +211,6 @@ class CommoditiesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def commodity_params
-      params.require(:commodity).permit(:name, :price, :introduction, :business_id)
+      params.require(:commodity).permit(:name, :price, :introduction, :business_id, :category)
     end
 end
