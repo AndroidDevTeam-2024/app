@@ -140,7 +140,7 @@ class UsersController < ApplicationController
           }, status: :ok
         else
           render json: {
-            errors: @user.errors.full_messages,
+            errors: "User Update Failed"
           }, status: :unprocessable_entity
         end
       else
