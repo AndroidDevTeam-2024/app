@@ -94,6 +94,8 @@ class CommoditiesController < ApplicationController
           price: commodity.price,
           introduction: commodity.introduction,
           homepage: commodity.url,
+          business_id: commodity.business_id,
+          exist: commodity.exist
         } }
       }
     else
@@ -116,6 +118,8 @@ class CommoditiesController < ApplicationController
             price: commodity.price,
             introduction: commodity.introduction,
             homepage: commodity.url,
+            business_id: commodity.business_id,
+            exist: commodity.exist
           } }
         }
       else
@@ -141,6 +145,8 @@ class CommoditiesController < ApplicationController
           price: commodity.price,
           introduction: commodity.introduction,
           homepage: commodity.url,
+          business_id: commodity.business_id,
+          exist: commodity.exist
         } }
       }
     else
