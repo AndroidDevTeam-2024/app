@@ -215,8 +215,8 @@ class CommoditiesController < ApplicationController
           file.write(uploaded_file.read)
         end
         relative_path = "uploads/#{uploaded_file.original_filename}"
-        image_url = "#{request.base_url}/#{relative_path}"
-        if @commodity.update_column(:homepage, image_url)
+        image_url = URI.join(request.base_url, relative_path).to_s
+        if @commodity.update_column(:url, image_url)
           render json: {
             homepage: image_url
           }, status: :ok
@@ -241,7 +241,7 @@ class CommoditiesController < ApplicationController
     @commodity = Commodity.find_by(id: params[:id])
     if @commodity
       render json: {
-        homepage: @commodity.homepage
+        homepage: @commodity.url
       }, status: :ok
     else
       render json: {

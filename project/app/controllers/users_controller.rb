@@ -133,8 +133,8 @@ class UsersController < ApplicationController
           file.write(uploaded_file.read)
         end
         relative_path = "uploads/#{uploaded_file.original_filename}"
-        image_url = "#{request.base_url}/#{relative_path}"
-        if @user.update_column(:avator, image_url)
+        image_url = URI.join(request.base_url, relative_path).to_s
+        if @user.update_column(:url, image_url)
           render json: {
             avator: image_url
           }, status: :ok
@@ -155,18 +155,18 @@ class UsersController < ApplicationController
     end
   end
 
-  def get_avator
-    @user = User.find_by(id, params[:id])
-    if @user
-      render json: {
-        homepage: @user.homepage
-      }, status: :ok
-    else
-      render json: {
-        errors: "User not found"
-      }, status: :not_found
-    end
+def get_avator
+  @user = User.find_by(id: params[:id])
+  if @user
+    render json: {
+      avator: @user.url
+    }, status: :ok
+  else
+    render json: {
+      errors: "User not found"
+    }, status: :not_found
   end
+end
 
   private
     # Use callbacks to share common setup or constraints between actions.

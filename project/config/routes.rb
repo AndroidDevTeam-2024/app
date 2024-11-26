@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   get "user/find_by_id/:id" => "users#find_by_id"
   put "user/update_by_id/:id" => "users#update_by_id"
   post "/user/upload_avator" => "users#upload_avator"
-  get "/user/get_avator/:id" => "user#get_avator"
+  get "/user/get_avator/:id" => "users#get_avator"
 
   # Commodity
   post "commodity/register" => "commodities#register"
