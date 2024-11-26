@@ -114,6 +114,7 @@ class MessagesController < ApplicationController
           date: message.date,
           content: message.content,
           publisher: message.publisher,
+          avator: User.find_by(id: message.publisher).url,
           publisher_name: User.find_by(id: message.publisher).name,
           acceptor: message.acceptor
         } }
