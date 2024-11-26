@@ -155,7 +155,9 @@ class MessagesController < ApplicationController
             date: message.date,
             content: message.content,
             publisher: message.publisher,
-            acceptor: message.acceptor
+            publisher_name: User.find_by(id: message.publisher).name,
+            acceptor: message.acceptor,
+            acceptor_name: User.find_by(id: message.acceptor).name,
           } }
         }, status: :ok
       else
