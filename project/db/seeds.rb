@@ -12,15 +12,15 @@
   User.find_or_create_by!(name: name, email: "#{name}@example.com") do |user|
     user.password = "#{name}123"
     user.password_confirmation = "#{name}123"
-    user.avator = "path/to/default/avator"
+    user.url = "path/to/default/avator"
   end
 end
 
 # 生成四个Commodity 可乐 鸡腿 面包 台灯
 ["cola", "chiken", "bread"].each do |name|
-  Commodity.find_or_create_by!(name: name, price: 10, introduction: "It is of good taste", business_id: 1, homepage: "path/to/default/homepage", exist: true, category: "food")
+  Commodity.find_or_create_by!(name: name, price: 10, introduction: "It is of good taste", business_id: 1, url: "path/to/default/homepage", exist: true, category: "food")
 end
 
 ["lamp"].each do |name|
-  Commodity.find_or_create_by!(name: name, price: 10, introduction: "It is of good usage", business_id: 1, homepage: "path/to/default/homepage", exist: true, category: "furniture")
+  Commodity.find_or_create_by!(name: name, price: 10, introduction: "It is of good usage", business_id: 1, url: "path/to/default/homepage", exist: true, category: "furniture")
 end
