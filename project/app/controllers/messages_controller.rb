@@ -195,6 +195,34 @@ class MessagesController < ApplicationController
     end
   end
 
+  def refresh
+    user1 = User.find_by(id: params[:id1])
+    user2 = User.find_by(id: params[:id2])
+    date = params[:date]
+
+    if user1 && user2 && date
+      messages = Message.where(acceptor: user1.id, publisher: user2.id).where('created_at > ?', date)
+      if messages.any?
+        render json: {
+          messages: messages.map { |message| {
+            id: message.id,
+            date: message.date,
+            content: message.content,
+            publisher: message.publisher,
+            publisher_name: User.find_by(id: message.publisher).name,
+            avator: User.find_by(id: message.publisher).url,
+          } }
+        }
+      else
+        render json: {
+          errors: "Messages Not Found"
+        }, status: :not_found
+      end
+    else
+      render json: { errors: 'Invalid parameters' }, status: :bad_request
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_message

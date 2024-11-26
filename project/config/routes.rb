@@ -50,5 +50,6 @@ Rails.application.routes.draw do
   delete "message/delete_by_id/:id" => "messages#delete_by_id"
   get "message/talk" => "messages#talk"
   delete "message/delete/talk" => "messages#delete_talk"
+  get "/message/refresh" => "messages#refresh"
   
 end
