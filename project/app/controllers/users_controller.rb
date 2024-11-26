@@ -60,11 +60,11 @@ class UsersController < ApplicationController
 
   def register
     @user = User.new(user_params)
-    @user.avator = "path/to/default/avator"
+    @user.url = "path/to/default/avator"
     if @user.save
       render json: { 
         id: @user.id,
-        avator: @user.avator 
+        avator: @user.url 
       }, status: :ok
     else
       render json: {
@@ -79,7 +79,7 @@ class UsersController < ApplicationController
       render json: {
         id: @user.id,
         email: @user.email,
-        avator: @user.avator,
+        avator: @user.url,
       }
     else 
       render json: {
@@ -95,7 +95,7 @@ class UsersController < ApplicationController
         id: @user.id,
         name: @user.name,
         email: @user.email,
-        avator: @user.avator,
+        avator: @user.url,
       }, status: :ok
     else
       render json: {
@@ -112,7 +112,7 @@ class UsersController < ApplicationController
         id: @user.id,
         name: @user.name,
         email: @user.email,
-        avator: @user.avator,
+        avator: @user.url,
       }, status: :ok
     else
       render json: {

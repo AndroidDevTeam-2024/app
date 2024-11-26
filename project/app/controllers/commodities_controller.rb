@@ -63,12 +63,12 @@ class CommoditiesController < ApplicationController
     @user = User.find_by(id: business_id)
     if @user
       @commodity = Commodity.new(commodity_params)
-      @commodity.homepage = "path/to/default/homepage"
+      @commodity.url = "path/to/default/homepage"
       @commodity.exist = true
       if @commodity.save
         render json: {
           id: @commodity.id,
-          homepage: @commodity.homepage,
+          homepage: @commodity.url,
         }, status: :ok
       else
         render json: {
@@ -93,7 +93,7 @@ class CommoditiesController < ApplicationController
           name: commodity.name,
           price: commodity.price,
           introduction: commodity.introduction,
-          homepage: commodity.homepage,
+          homepage: commodity.url,
         } }
       }
     else
@@ -115,7 +115,7 @@ class CommoditiesController < ApplicationController
             name: commodity.name,
             price: commodity.price,
             introduction: commodity.introduction,
-            homepage: commodity.homepage,
+            homepage: commodity.url,
           } }
         }
       else
@@ -140,7 +140,7 @@ class CommoditiesController < ApplicationController
           name: commodity.name,
           price: commodity.price,
           introduction: commodity.introduction,
-          homepage: commodity.homepage,
+          homepage: commodity.url,
         } }
       }
     else
@@ -159,7 +159,7 @@ class CommoditiesController < ApplicationController
         price: @commodity.price,
         introduction: @commodity.introduction,
         business_id: @commodity.business_id,
-        homepage: @commodity.homepage,
+        homepage: @commodity.url,
         exist: @commodity.exist,
       }
     else
@@ -193,7 +193,7 @@ class CommoditiesController < ApplicationController
         price: @commodity.price,
         introduction: @commodity.introduction,
         business_id: @commodity.business_id,
-        homepage: @commodity.homepage,
+        homepage: @commodity.url,
         exist: @commodity.exist,
       }, status: :ok
     else
