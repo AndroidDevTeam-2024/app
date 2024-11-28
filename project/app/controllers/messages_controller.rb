@@ -25,9 +25,11 @@ class MessagesController < ApplicationController
     receiver = User.find_by(id: message_params[:acceptor])
     if sender && receiver
       @message = Message.new(message_params)
+      @message.date = Time.now
       if @message.save
         render json: {
           id: @message.id,
+          date: @message.date
         }, status: :ok
       else
         render json: {
@@ -152,13 +154,13 @@ class MessagesController < ApplicationController
         render json: {
           messages: messages.map { |message| {
             id: message.id,
-            date: message.date,
             content: message.content,
             publisher: message.publisher,
             publisher_name: User.find_by(id: message.publisher).name,
             acceptor: message.acceptor,
             acceptor_name: User.find_by(id: message.acceptor).name,
-          } }
+          } },
+          date: Time.now
         }, status: :ok
       else
         render json: {
@@ -208,12 +210,12 @@ class MessagesController < ApplicationController
         render json: {
           messages: messages.map { |message| {
             id: message.id,
-            date: message.date,
             content: message.content,
             publisher: message.publisher,
             publisher_name: User.find_by(id: message.publisher).name,
             avator: User.find_by(id: message.publisher).url,
-          } }
+          } },
+          date: Time.now
         }
       else
         render json: {
