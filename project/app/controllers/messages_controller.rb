@@ -154,11 +154,9 @@ class MessagesController < ApplicationController
         render json: {
           messages: messages.map { |message| {
             id: message.id,
-            content: message.content,
-            publisher: message.publisher,
-            publisher_name: User.find_by(id: message.publisher).name,
-            acceptor: message.acceptor,
-            acceptor_name: User.find_by(id: message.acceptor).name,
+            senderId: message.publisher,
+            senderName: User.find_by(id: message.publisher).name,
+            content: message.content
           } },
           date: Time.now
         }, status: :ok
@@ -209,11 +207,10 @@ class MessagesController < ApplicationController
       if messages.any?
         render json: {
           messages: messages.map { |message| {
-            id: message.id,
-            content: message.content,
-            publisher: message.publisher,
-            publisher_name: User.find_by(id: message.publisher).name,
-            avator: User.find_by(id: message.publisher).url,
+          id: message.id,
+          senderId: message.publisher,
+          senderName: user2.name,
+          content: message.content
           } },
           date: Time.now
         }
