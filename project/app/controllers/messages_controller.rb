@@ -29,7 +29,9 @@ class MessagesController < ApplicationController
       if @message.save
         render json: {
           id: @message.id,
-          date: @message.date
+          senderId: @message.publisher,
+          senderName: sender.name,
+          content: @message.content
         }, status: :ok
       else
         render json: {
