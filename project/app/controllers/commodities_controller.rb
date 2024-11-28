@@ -84,7 +84,11 @@ class CommoditiesController < ApplicationController
 
   def find_by_category
     category = params[:category]
-    @commodities = Commodity.where(category: category)
+    if category == "all"
+      @commodities = Commodity.all
+    else 
+      @commodities = Commodity.where(category: category)
+    end
     if @commodities
       render json: {
         # 返回每一个商品的id, name, price, introduction, homepage组成的数组
@@ -95,6 +99,7 @@ class CommoditiesController < ApplicationController
           introduction: commodity.introduction,
           homepage: commodity.url,
           business_id: commodity.business_id,
+          category: commodity.category,
           exist: commodity.exist
         } }
       }

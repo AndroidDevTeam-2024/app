@@ -115,12 +115,10 @@ class MessagesController < ApplicationController
       render json: {
         messages: latest_messages.map { |message| {
           id: message.id,
-          date: message.date,
           content: message.content,
-          publisher: message.publisher,
+          senderId: message.publisher,
           avator: User.find_by(id: message.publisher).url,
-          publisher_name: User.find_by(id: message.publisher).name,
-          acceptor: message.acceptor
+          senderName: User.find_by(id: message.publisher).name,
         } }
       }
     else
