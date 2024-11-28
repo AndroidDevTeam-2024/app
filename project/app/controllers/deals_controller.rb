@@ -85,6 +85,8 @@ class DealsController < ApplicationController
     commodity = Commodity.find_by(id: params[:commodity])
     if seller && customer && commodity && commodity.exist
       @deal = Deal.new(deal_params)
+      @deal.date = Time.now
+      @deal.comment = "此订单还没有评论哦"
       commodity.exist = false
       if @deal.save
         render json: { 
@@ -92,7 +94,7 @@ class DealsController < ApplicationController
         }, status: :ok
       else
         render json: { 
-          errors: "Deal save error" 
+          errors: @deal.errors.full_messages 
         }, status: :bad_request
       end
     else
@@ -148,6 +150,6 @@ class DealsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def deal_params
-      params.require(:deal).permit(:seller, :customer, :commodity, :date, :comment)
+      params.require(:deal).permit(:seller, :customer, :commodity)
     end
 end
