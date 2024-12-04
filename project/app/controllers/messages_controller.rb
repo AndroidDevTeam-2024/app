@@ -28,10 +28,12 @@ class MessagesController < ApplicationController
       @message.date = Time.now
       if @message.save
         render json: {
-          id: @message.id,
-          senderId: @message.publisher,
-          senderName: sender.name,
-          content: @message.content
+          message: {
+            id: @message.id,
+            senderId: @message.publisher,
+            senderName: sender.name,
+            content: @message.content
+          }
         }, status: :ok
       else
         render json: {
