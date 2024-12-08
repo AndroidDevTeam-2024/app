@@ -23,7 +23,7 @@ class DealsController < ApplicationController
   # POST /deals or /deals.json
   def create
     @deal = Deal.new(deal_params)
-
+    @deal.date = Time.now
     respond_to do |format|
       if @deal.save
         format.html { redirect_to @deal, notice: "Deal was successfully created." }
@@ -86,6 +86,7 @@ class DealsController < ApplicationController
     if seller && customer && commodity && commodity.exist
       @deal = Deal.new(deal_params)
       @deal.date = Time.now
+      puts Time.now
       @deal.comment = "此订单还没有评论哦"
       commodity.exist = false
       if @deal.save

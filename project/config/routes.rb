@@ -49,7 +49,7 @@ Rails.application.routes.draw do
   get "message/find_by_receiver/:receiver" => "messages#find_by_receiver"
   delete "message/delete_by_id/:id" => "messages#delete_by_id"
   post "/message/talk" => "messages#talk"
-  delete "message/delete/talk" => "messages#delete_talk"
+  post "message/delete/talk" => "messages#delete_talk"
   post "/message/refresh" => "messages#refresh"
   
 end
